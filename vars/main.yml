@@ -6,6 +6,7 @@ dependencies_ubuntu:
   - nginx
   - dpkg-dev
   - php5
+  - php5-fpm
   - php5-mysql
   - php5-gd
   - php5-dev
@@ -22,6 +23,7 @@ dependencies_rhel:
   - nginx
   - git
   - php
+  - php-fpm
   - php-cli
   - php-mysql
   - php-process
