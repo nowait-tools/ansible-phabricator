@@ -60,5 +60,5 @@
   file: path=/var/repo state=directory
 
 - name: start phabricator daemons
-  command: "{{ web_root }}/phabricator/bin/phd start"
+  command: "{{ web_root }}/phabricator/bin/phd restart"
   changed_when: False
