@@ -7,3 +7,7 @@ database_config:
   user: phabricator
   pass: secret
   host: 127.0.0.1
+php_ini_config:
+  timezone: America/New_York
+  post_max_size: 32M
+  validate_timestamps: 0

@@ -36,6 +36,15 @@
     mode: 0644
   notify: restart nginx
 
+- name: add php.ini config
+  template:
+    src: php.ini.j2
+    dest: /etc/php5/fpm/conf.d/40-phabricator.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart php5-fpm
+
 - name: configure db credentials
   command: "{{ web_root }}/phabricator/bin/config set mysql.{{ item.key }} '{{ item.value }}'"
   with_dict: database_config
