@@ -11,11 +11,17 @@ Any pre-requisites that may not be covered by Ansible itself or the role should 
 Role Variables
 --------------
 
+    protocol: http
     server_url: secure.vagrant.dev
-    mysql_user: phabricator
-    mysql_pass: secret
     web_root: /var/www
-    install_localtion: localhost
+    database_config:
+      user: phabricator
+      pass: secret
+      host: 127.0.0.1
+    php_ini_config:
+      timezone: America/New_York
+      post_max_size: 32M
+      validate_timestamps: 0
 
 Example Playbook
 ----------------
