@@ -39,6 +39,7 @@
 - name: configure db credentials
   command: "{{ web_root }}/phabricator/bin/config set mysql.{{ item.key }} '{{ item.value }}'"
   with_dict: database_config
+  changed_when: False
 
 - name: run phabricator db migrations
   command: "{{ web_root }}/phabricator/bin/storage upgrade --force"
