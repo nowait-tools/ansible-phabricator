@@ -30,8 +30,8 @@ Simple playbook that is enabled for use of clustering. Never use the default key
 
     ---
     - hosts: localhost
-      connection: local
       sudo: yes
+      gather_facts: yes
       roles:
         - phabricator
 
