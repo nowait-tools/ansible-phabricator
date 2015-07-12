@@ -16,9 +16,13 @@
   with_items: dependencies_rhel
   when: ansible_os_family == "RedHat"
 
-- name: install required python module
-  pip:
-    name: MySQL-python
+- name: install tools for local mysql
+  include: local.yml
+  when: install_location == localhost
+
+- name: install tools for external connection
+  include: external.yml
+  when: install_location == external
 
 - name: download phabricator from git repo
   git:
@@ -36,13 +40,25 @@
     mode: 0644
   notify: restart nginx
 
-- name: create mysql user
-  mysql_user:
-    name: "{{ mysql_user }}"
-    password: "{{ mysql_pass }}"
-    priv: "*.*:ALL,GRANT"
-    state: present
-
 - name: run phabricator db migrations
   command: "{{ web_root }}/phabricator/bin/storage upgrade --force --user {{ mysql_user }} --password {{ mysql_pass }}"
   changed_when: False
+
+- name: start phabricator daemons
+  command: "{{ web_root }}/phabricator/bin/phd start"
+  changed_when: False
+
+- name: configure base URI
+ command: "{{ web_root }}/phabricator/bin/config set phabricator.base-uri '{{ protocol }}://{{ server_url }}/'"
+ changed_when: False
+
+- name: install pygments for better syntax highlighting
+  pip:
+    name: pygments
+
+- name: configue pygments highlighting
+  command: "{{ web_root }}/phabricator/bin/config set pygments.enabled 'true'"
+  changed_when: False
+
+- name: Creates repo directory
+  file: path=/var/repo state=directory

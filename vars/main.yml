@@ -2,7 +2,6 @@
 # vars file for phabricator
 dependencies_ubuntu:
   - git-core
-  - mysql-server
   - nginx
   - dpkg-dev
   - php5
@@ -15,6 +14,10 @@ dependencies_ubuntu:
   - php5-cli
   - php5-json
   - python-pip
+  - sendmail
+
+dependencies_ubuntu_local:
+  - mysql-server
   - python-dev
   - libmysqlclient-dev
 
@@ -32,8 +35,11 @@ dependencies_rhel:
   - php-pecl-apc
   - php-pecl-json
   - php-mbstring
-  - mysql-server
   - python-pip
+  - sendmail
+
+dependencies_rhel_local:
+  - mysql-server
   - python-dev
   - libmysqlclient-dev
 
