@@ -1,0 +1,6 @@
+---
+# defaults file for phabricator
+server_url: secure.vagrant.dev
+mysql_user: phabricator
+mysql_pass: secret
+web_root: /var/www

@@ -1,0 +1,6 @@
+---
+# handlers file for phabricator
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted

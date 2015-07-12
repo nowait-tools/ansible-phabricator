@@ -1,0 +1,41 @@
+---
+# vars file for phabricator
+dependencies_ubuntu:
+  - git-core
+  - mysql-server
+  - nginx
+  - dpkg-dev
+  - php5
+  - php5-mysql
+  - php5-gd
+  - php5-dev
+  - php5-curl
+  - php-apc
+  - php5-cli
+  - php5-json
+  - python-pip
+  - python-dev
+  - libmysqlclient-dev
+
+dependencies_rhel:
+  - epel-release
+  - nginx
+  - git
+  - php
+  - php-cli
+  - php-mysql
+  - php-process
+  - php-devel
+  - php-gd
+  - php-pecl-apc
+  - php-pecl-json
+  - php-mbstring
+  - mysql-server
+  - python-pip
+  - python-dev
+  - libmysqlclient-dev
+
+repos:
+  phabricator: https://github.com/phacility/phabricator.git
+  arcanist: https://github.com/phacility/arcanist.git
+  libphutil: https://github.com/phacility/libphutil.git

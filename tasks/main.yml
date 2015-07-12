@@ -1,0 +1,48 @@
+---
+# tasks file for phabricator
+- name: install packages (Debian)
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: dependencies_ubuntu
+  when: ansible_os_family == "Debian"
+
+- name: install packages (RHEL)
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: dependencies_rhel
+  when: ansible_os_family == "RedHat"
+
+- name: install required python module
+  pip:
+    name: MySQL-python
+
+- name: download phabricator from git repo
+  git:
+    repo: "{{ item.value }}"
+    dest: "{{ web_root }}/{{ item.key }}"
+    accept_hostkey: yes
+  with_dict: repos
+
+- name: enable phabricator in nginx
+  template:
+    src: phabricator.conf.j2
+    dest: /etc/nginx/sites-enabled/phabricator.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nginx
+
+- name: create mysql user
+  mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_pass }}"
+    priv: "*.*:ALL,GRANT"
+    state: present
+
+- name: run phabricator db migrations
+  command: "{{ web_root }}/phabricator/bin/storage upgrade --force --user {{ mysql_user }} --password {{ mysql_pass }}"
+  changed_when: False
