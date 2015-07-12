@@ -44,10 +44,6 @@
   command: "{{ web_root }}/phabricator/bin/storage upgrade --force"
   changed_when: False
 
-- name: start phabricator daemons
-  command: "{{ web_root }}/phabricator/bin/phd start"
-  changed_when: False
-
 - name: configure base URI
   command: "{{ web_root }}/phabricator/bin/config set phabricator.base-uri '{{ protocol }}://{{ server_url }}/'"
   changed_when: False
@@ -62,3 +58,7 @@
 
 - name: Creates repo directory
   file: path=/var/repo state=directory
+
+- name: start phabricator daemons
+  command: "{{ web_root }}/phabricator/bin/phd start"
+  changed_when: False
