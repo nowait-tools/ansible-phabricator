@@ -72,31 +72,6 @@
     mode: 0644
   notify: restart php5-fpm
 
-- name: configure db credentials
-  command: "{{ web_root }}/phabricator/bin/config set mysql.{{ item.key }} '{{ item.value }}'"
-  with_dict: database_config
-  changed_when: False
-
-- name: run phabricator db migrations
-  command: "{{ web_root }}/phabricator/bin/storage upgrade --force"
-  changed_when: False
-
-- name: configure base URI
-  command: "{{ web_root }}/phabricator/bin/config set phabricator.base-uri '{{ protocol }}://{{ server_url }}/'"
-  changed_when: False
-
-- name: set daemon user
-  command: "{{ web_root }}/phabricator/bin/config set phd.user '{{ users.daemon }}'"
-  changed_when: False
-
-- name: set vcs user
-  command: "{{ web_root }}/phabricator/bin/config set diffusion.ssh-user '{{ users.vcs }}'"
-  changed_when: False
-
-- name: set http auth
-  command: "{{ web_root }}/phabricator/bin/config set diffusion.allow-http-auth '{{ allow_http_auth }}'"
-  changed_when: False
-
 - name: add git binarys to path
   file:
     src: "{{ git_core_path }}/git-http-backend"
@@ -106,13 +81,12 @@
     state: link
   changed_when: False
 
+- name: include config
+  include: config.yml
+
 - name: install pygments for better syntax highlighting
   pip:
     name: pygments
-
-- name: configue pygments highlighting
-  command: "{{ web_root }}/phabricator/bin/config set pygments.enabled 'true'"
-  changed_when: False
 
 - name: Creates repo directory
   file:
