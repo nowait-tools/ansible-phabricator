@@ -20,6 +20,33 @@
   include: local.yml
   when: database_config.host == "127.0.0.1"
 
+- name: create phabricator users
+  user:
+    name: "{{ item.value }}"
+  with_dict: users
+
+- name: config sudoers file vcs
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^{{ users.vcs }}"
+    line: "{{ users.vcs }} {{ permissions.vcs }}"
+    validate: 'visudo -cf %s'
+
+- name: configure sudoers file www
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^{{ users.web }}"
+    line: "{{ users.web }} {{ permissions.web }}"
+    validate: 'visudo -cf %s'
+
+- name: dont require tty
+  lineinfile:
+    dest: /etc/sudoers
+    state: absent
+    line: "Defaults    requiretty"
+
 - name: download phabricator from git repo
   git:
     repo: "{{ item.value }}"
@@ -58,6 +85,27 @@
   command: "{{ web_root }}/phabricator/bin/config set phabricator.base-uri '{{ protocol }}://{{ server_url }}/'"
   changed_when: False
 
+- name: set daemon user
+  command: "{{ web_root }}/phabricator/bin/config set phd.user '{{ users.daemon }}'"
+  changed_when: False
+
+- name: set vcs user
+  command: "{{ web_root }}/phabricator/bin/config set diffusion.ssh-user '{{ users.vcs }}'"
+  changed_when: False
+
+- name: set http auth
+  command: "{{ web_root }}/phabricator/bin/config set diffusion.allow-http-auth '{{ allow_http_auth }}'"
+  changed_when: False
+
+- name: add git binarys to path
+  file:
+    src: "{{ git_core_path }}/git-http-backend"
+    dest: /usr/bin/git-http-backend
+    owner: root
+    group: root
+    state: link
+  changed_when: False
+
 - name: install pygments for better syntax highlighting
   pip:
     name: pygments
@@ -67,8 +115,13 @@
   changed_when: False
 
 - name: Creates repo directory
-  file: path=/var/repo state=directory
+  file:
+    path: /var/repo
+    state: directory
+    owner: "{{ users.daemon }}"
+    group: "{{ users.daemon }}"
 
 - name: start phabricator daemons
   command: "{{ web_root }}/phabricator/bin/phd restart"
+  sudo_user: "{{ users.daemon }}"
   changed_when: False

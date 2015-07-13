@@ -15,6 +15,8 @@ dependencies_ubuntu:
   - php5-json
   - python-pip
   - sendmail
+  - subversion
+  - mercurial
 
 dependencies_ubuntu_local:
   - mysql-server
@@ -37,6 +39,8 @@ dependencies_rhel:
   - php-mbstring
   - python-pip
   - sendmail
+  - subversion
+  - mercurial
 
 dependencies_rhel_local:
   - mysql-server
